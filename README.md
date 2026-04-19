@@ -20,12 +20,6 @@ Before you begin, ensure you have met the following requirements:
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yuktiarya/l5agent.git
-   cd l5agent
-   ```
-
 2. Install the dependencies:
    ```bash
    npm install
