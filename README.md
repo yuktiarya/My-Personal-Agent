@@ -1,4 +1,4 @@
-# NexOS AI Agent
+# AI Agent
 
 A robust, intelligent conversational agent built with Node.js and Google Gemini. The agent is capable of routing natural language queries and executing function calling to fetch live data such as cryptocurrency prices (via CoinGecko) and real-time weather information (via WeatherAPI). It features a modern, responsive Web Chat UI built with Express.js, providing an exceptional user experience out-of-the-box.
 
