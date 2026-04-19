@@ -1,6 +1,10 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import readlineSync from "readline-sync";  //Allows your Node.js program to take input from the terminal (keyboard).
+import express from 'express';
 import 'dotenv/config'; // Load environment variables from a .env file into process.env. This is useful for managing configuration settings, such as API keys, without hardcoding them in your code.
+
+const app = express();
+app.use(express.json());
+app.use(express.static('public'));
 
 // Configure the client
 const ai = new GoogleGenAI({
@@ -116,22 +120,38 @@ async function runAgent() {
             parts:[{text:result.text}]
         });
         console.log(result.text);
-        break;
+        return result.text;
     }
   }
 }
 
-//For Asking questions to the agent
-while(true) {
-    const question = readlineSync.question('Ask a question: '); // User input
-
-    if(question == 'exit') {
-        break;
+// Express Routes
+app.post('/chat', async (req, res) => {
+    try {
+        const question = req.body.message;
+        if(!question) {
+            return res.status(400).json({error: "Message is required"});
+        }
+        
+        History.push({
+            role:'user',
+            parts:[{text:question}]
+        });
+        
+        const answer = await runAgent();
+        res.json({reply: answer});
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({error: "Internal server error"});
     }
+});
 
-    History.push({ // give the question to llm and also save it in history array
-        role:'user',
-        parts:[{text:question}]
-    });
-    await runAgent();
-}
+app.post('/clear', (req, res) => {
+    History.length = 0; // Clear history array
+    res.json({success: true});
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
